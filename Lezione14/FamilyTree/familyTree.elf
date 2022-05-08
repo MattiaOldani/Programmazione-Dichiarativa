@@ -1,0 +1,117 @@
+% Creiamo un albero genealogico
+
+% Introduciamo il dominio formato da individui di tipo "i"
+i : type.
+
+adam : i.
+bob : i.
+clare : i.
+dora : i.
+elsa : i.
+fred: i.
+george: i.
+hilary: i.
+ian : i.
+jane : i.
+laura: i.
+mario : i.
+
+% Introduciamo delle relazione di madre/padre tra gli individui
+% father X Y <===> X è il padre di Y
+% mother X Y <===> X è la madre di Y
+father : i -> i -> type.
+mother : i -> i -> type.
+
+% Scriviamo una serie di "fatti" che asseriscono la validità di queste relazioni
+% Ad ogni fatto va associata una label
+f/ab : father adam bob.
+f/ac : father adam clare.  
+
+f/bd : father bob dora.
+f/be : father bob elsa.
+
+m/cf : mother clare fred.
+m/cg : mother clare george.
+m/ch : mother clare hilary.	
+
+m/hi : mother hilary ian.
+m/hj : mother hilary jane.
+
+f/il : father ian laura.
+
+m/jm : mother jane mario.
+
+% Possiamo vedere queste relazioni come delle tabelle che mettono una relazione un numero n di domini
+% Le relazioni sono un sottoinsieme del prodotto cartesiano degli n domini
+
+% Interroghiamo queste "basi di fatti" effettuando delle query/goal
+% Per far ciò, scrivere "top" nel REPL di twelf e inserire una query
+% Per eseguire invece delle query direttamente da file, si usa %query
+% I parametri sono il numero di soluzioni attese, il numero di tentativi e la query
+
+% father adam bob. --> questa query chiede se vale questa relazione
+% Empty Substitution. --> la query ha avuto successo, ovvero vale la relazione
+%query 1 1 father adam bob.
+
+% mother adam elsa.
+% No more solutions --> se esce subito significa che la relazione non è verificata
+%query 0 1 mother adam elsa.
+
+% father adam Y.
+% Query con una variabile logica
+%query 2 1 father adam Y.
+
+% mother X hilary.
+% Idem con patate, cambia solo la posizione della variabile logica
+%query 1 1 mother X hilary.
+
+% Queste sono le informazioni estensionali del programma
+% Possiamo passare da un DB "noemale" ad uno deduttivo
+
+% Creiamo la relazione di genitore
+% parent X Y <===> X è il genitore di Y
+parent : i -> i -> type.
+
+% Per verificare la relazione di parent, possiamo indicare delle clausole che devono essere verificate
+p/f : parent X Y
+	<- father X Y.
+
+p/m : parent X Y
+	<- mother X Y.
+
+% parent clare fred.
+%query 1 1 parent clare fred.
+
+% parent clare Y.
+%query 1 1 parent clare Y.
+
+% parent X elsa.
+%query 1 1 parent X elsa.
+
+% Creiamo ora le relazioni di grandfather e grandmother
+grandfather : i -> i -> type.
+gf : grandfather X Y
+	<- father X Z
+	<- parent Z Y.
+
+grandmother : i -> i -> type.
+gm : grandmother X Y
+	<- mother X Z
+	<- parent Z Y.
+
+% grandfather adam Y.
+%query 5 1 grandfather adam Y.
+
+% Introduciamo infine la relazione di ancestor in modo ricorsivo
+% ancestor X Y <===> X è un antenato di Y
+ancestor : i -> i -> type.
+
+anc/1 : ancestor X Y
+	<- parent X Y.
+
+anc/2 : ancestor X Y
+	<- parent X Z
+	<- ancestor Z Y.
+
+% ancestor adam Y.
+%query 11 1 ancestor adam Y.

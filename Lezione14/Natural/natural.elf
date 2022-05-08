@@ -1,0 +1,33 @@
+% Definiamo l'aritmetica di Peano
+nat : type.
+
+% Zero e funzione successore
+z : nat.
+s : nat -> nat.
+
+% Somma
+% plus X Y Z <===> X + Y = Z
+plus : nat -> nat -> nat -> type.
+
+plus_z : plus z Y Y.
+plus_s : plus (s X) Y (s Z)
+	<- plus X Y Z.
+
+% plus (s z) (s z) Z
+%query 1 1 plus (s z) (s z) Z.
+
+% plus M (s z) (s (s z)).
+% Esempio di query usata "al contrario"
+%query 1 1 plus M (s z) (s (s z)).
+
+% Moltiplicazione
+% times X Y Z <===> X * Y = Z
+times : nat -> nat -> nat -> type.
+
+times_z : times z N z.
+times_s : times (s M) N Q
+	<- times M N P
+	<- plus P N Q.
+
+% times (s (s z)) (s z) (s (s z))
+%query 1 1 times (s (s z)) (s z) (s (s z)).
