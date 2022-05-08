@@ -24,8 +24,8 @@ plus/s : plus (s X) Y (s Z)
 % times X Y Z <===> X * Y = Z
 times : nat -> nat -> nat -> type.
 
-times_z : times z N z.
-times_s : times (s M) N Q
+times/z : times z N z.
+times/s : times (s M) N Q
 	<- times M N P
 	<- plus P N Q.
 
