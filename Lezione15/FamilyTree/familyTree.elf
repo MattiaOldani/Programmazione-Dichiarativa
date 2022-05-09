@@ -1,0 +1,65 @@
+% Ho copiato tutto il contenuto del file della lezione scorsa sono per eseguire una query
+% Se non mi date la laurea dopo questo io non so cosa dire
+i : type.
+
+adam : i.
+bob : i.
+clare : i.
+dora : i.
+elsa : i.
+fred: i.
+george: i.
+hilary: i.
+ian : i.
+jane : i.
+laura: i.
+mario : i.
+
+father : i -> i -> type.
+mother : i -> i -> type.
+
+f/ab : father adam bob.
+f/ac : father adam clare.  
+
+f/bd : father bob dora.
+f/be : father bob elsa.
+
+m/cf : mother clare fred.
+m/cg : mother clare george.
+m/ch : mother clare hilary.	
+
+m/hi : mother hilary ian.
+m/hj : mother hilary jane.
+
+f/il : father ian laura.
+
+m/jm : mother jane mario.
+
+parent : i -> i -> type.
+
+p/f : parent X Y
+	<- father X Y.
+
+p/m : parent X Y
+	<- mother X Y.
+
+grandfather : i -> i -> type.
+gf : grandfather X Y
+	<- father X Z
+	<- parent Z Y.
+
+grandmother : i -> i -> type.
+gm : grandmother X Y
+	<- mother X Z
+	<- parent Z Y.
+
+ancestor : i -> i -> type.
+
+anc/1 : ancestor X Y
+	<- parent X Y.
+
+anc/2 : ancestor X Y
+	<- parent X Z
+	<- ancestor Z Y.
+
+%solve t : ancestor adam elsa.
