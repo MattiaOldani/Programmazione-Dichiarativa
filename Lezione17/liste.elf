@@ -1,0 +1,117 @@
+% Introduciamo il tipo lista
+natList : type.
+
+% Con name possiamo modificare il nome di un tipo nel printer
+%name natList Xs.
+
+% Caso base: lista vuota
+nil : natList.
+
+% Operatore di cons infisso con associazione a destra
+# : nat -> natList -> natList.
+
+% Per definire un operatore infisso si usa infix
+%infix right 6 #.
+
+% Scriviamo qualche definizione/abbreviazione
+% Possono essere aperte secondo necessità
+ls1 = 0 # 1 # 2 # 3 # nil.
+ls2 = 0 # 1 # 2 # 1 # 3 # 2 # nil.
+ls3 = 1 # 2 # 3 # nil.
+
+% Relazione member
+% X membro di qualsiasi lista che ha X come testa
+% Se X è membro di ys allora X è membro di qualsiasi lista che abbia ys come coda
+member : nat -> natList -> type.
+
+% Si usa _ per indicare la variabile anonima
+m/1 : member X (X # _).
+m/2 : member X (Y # Ys)
+	<- member X Ys.
+
+% Con mode andiamo a definire se il predicato avrà come "parametri" dei termini aperti o chiusi
+% Con termini chiusi si intendono dei termini completamente istanziati
+%mode member +X +Xs.
+%query 1 1 member 3 ls2.
+
+%mode member -X +Xs.
+%query 4 * member X ls1.
+
+% Relazione append
+% Append di una lista ys a nil dà come risultato ys
+% Se append Xs Ys dà come risultato Zs, allora append X#Xs Ys dà come risultato X#Zs
+append : natList -> natList -> natList -> type.
+
+a/1 : append nil Ys Ys.
+a/2 : append (X # Xs) Ys (X # Zs)
+	<- append Xs Ys Zs.
+
+%mode append +Xs +Ys +Zs.
+%query 1 1 append (0 # nil) ls3 ls1.
+
+%mode append +Xs +Ys -Zs.
+%query 1 1 append ls1 (4 # nil) Zs.
+
+%mode append -Xs -Ys +Zs.
+%query 5 5 append Xs Ys ls1.
+%query 1 1 append Before (2 # After) ls1.
+
+% Relazione member definita con l'append
+% member X Xs se Xs è scomponibile in 2 liste tali che la seconda ha come testa X
+memberAppend : nat -> natList -> type.
+
+ma/1 : memberAppend X Xs
+	<- append _ (X # _) Xs.
+
+%query 4 * memberAppend X ls1.
+
+% Relazione reverse
+% Il reverse di una lista vuota è la lista vuota
+% Il reverse di una lista (X # Xs) è il reverse di Xs al quale viene appesa la lista che contiene solo X
+reverse : natList -> natList -> type.
+
+rev/1 : reverse nil nil.
+rev/2 : reverse (X # Xs) Ys
+	<- reverse Xs Zs
+	<- append Zs (X # nil) Ys.
+
+%mode append +Xs +Ys -Zs.
+%mode reverse +Xs -Ys.
+%query 1 1 reverse ls1 Ys.
+
+% Relazione reverse definita con l'accumulatore
+reverseIt : natList -> natList -> natList -> type.
+
+r/1 : reverseIt nil Acc Acc.
+r/2 : reverseIt (X # Xs) Acc Ys
+	<- reverseIt Xs (X # Acc) Ys.
+
+%query 1 1 reverseIt Rs nil ls1.
+
+% Relazione delete
+delete : nat -> natList -> natList -> type.
+
+d/1 : delete X (X # Xs) Xs.
+d/2 : delete X (Y # Ys) (Y # Zs)
+      <- delete X Ys Zs.
+
+%mode delete +X +Xs -Ds.
+%query 1 1 delete 2 ls2 Xs.
+%query 2 2 delete 2 ls2 Xs.
+
+%mode delete -X +Xs -Ds.
+%query 4 * delete X ls1 Xs.
+
+%mode delete +X -Xs +Ds.
+%query 4 4 delete 5 Xs ls3.
+
+% Relazione di permutazione
+perm : natList -> natList -> type.
+
+p/n: perm nil nil.
+p/c: perm (X # Xs) Ps
+      <- perm Xs Ps1
+      <- delete X Ps Ps1.
+
+%mode perm +L -Ps.
+%query 6 6 perm Ps ls3.
