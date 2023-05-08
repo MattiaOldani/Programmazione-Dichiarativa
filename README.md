@@ -1,2 +1,3 @@
 # ProgrammazioneDichiarativa
-Repo contenente appunti e esercizi del corso di Programmazione Dichiarativa
+
+Repository contenente appunti e esercizi del corso di Programmazione Dichiarativa
